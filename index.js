@@ -4,6 +4,9 @@ const EMPTY = ' ';
 
 const container = document.getElementById('fieldWrapper');
 
+let gameState = [[EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY]];
+let isZeroStep = false;
+
 startGame();
 addResetListener();
 
@@ -30,6 +33,10 @@ function cellClickHandler (row, col) {
     // Пиши код тут
     console.log(`Clicked on cell: ${row}, ${col}`);
 
+    const step = isZeroStep ? ZERO : CROSS;
+    renderSymbolInCell(step, row, col);
+    gameState[row][col] = step;
+    isZeroStep = !isZeroStep;
 
     /* Пользоваться методом для размещения символа в клетке так:
         renderSymbolInCell(ZERO, row, col);
