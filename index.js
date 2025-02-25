@@ -30,16 +30,17 @@ function renderGrid(dimension) {
 }
 
 function cellClickHandler(row, col) {
-    // Пиши код тут
     console.log(`Clicked on cell: ${row}, ${col}`);
 
     const step = isZeroStep ? ZERO : CROSS;
     if (gameState[row][col] !== EMPTY) {
         return;
     }
+
     renderSymbolInCell(step, row, col);
     gameState[row][col] = step;
     isZeroStep = !isZeroStep;
+
     if (isTie()) {
         alert('Победила дружба');
     }
@@ -53,6 +54,7 @@ function isTie() {
             }
         }
     }
+
     return true;
 }
 
