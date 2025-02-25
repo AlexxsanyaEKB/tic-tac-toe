@@ -49,6 +49,13 @@ function cellClickHandler(row, col) {
     if (isWin()) {
         alert(`Победили ${step}`);
         isGameOver = true;
+
+        for (const cell of isWin()) {
+            const winnerRow = cell[0];
+            const winnerCol = cell[1];
+            renderSymbolInCell(gameState[winnerRow][winnerCol], winnerRow, winnerCol, 'red');
+        }
+
         return;
     }
 
@@ -71,40 +78,53 @@ function isTie() {
 }
 
 function isWin() {
-    return checkRows() || checkCols() || checkDiagonals();
+    const winnerRows = getWinnerRows();
+    const winnerCols = getWinnerCols();
+    const winnerDiagonals = getWinnerDiagonals();
+
+    return winnerRows || winnerCols || winnerDiagonals;
 }
 
-function checkRows() {
+function getWinnerRows() {
+
     for (const row of gameState) {
         if (row.every(cell => cell === CROSS) || row.every(cell => cell === ZERO)) {
-            return true;
+            const rowIndex = gameState.indexOf(row);
+            return [[rowIndex, 0], [rowIndex, 1], [rowIndex, 2]];
         }
     }
 
-    return false;
+    return undefined;
 }
 
-function checkCols() {
+function getWinnerCols() {
     for (let i = 0; i < gameState.length; i++) {
         if (gameState.every(row => row[i] === CROSS) || gameState.every(row => row[i] === ZERO)) {
-            return true;
+            return [[0, i], [1, i], [2, i]];
         }
     }
 
-    return false;
+    return undefined;
 }
 
-function checkDiagonals() {
+function getWinnerDiagonals() {
     const mainDiagonal = [];
     const sideDiagonal = [];
 
     for (let i = 0; i < gameState.length; i++) {
-        mainDiagonal.push   (gameState[i][i]);
+        mainDiagonal.push(gameState[i][i]);
         sideDiagonal.push(gameState[i][gameState.length - 1 - i]);
     }
 
-    return mainDiagonal.every(cell => cell === CROSS) || mainDiagonal.every(cell => cell === ZERO) ||
-        sideDiagonal.every(cell => cell === CROSS) || sideDiagonal.every(cell => cell === ZERO);
+    if (mainDiagonal.every(cell => cell === CROSS) || mainDiagonal.every(cell => cell === ZERO)) {
+        return [[0, 0], [1, 1], [2, 2]];
+    }
+
+    if (sideDiagonal.every(cell => cell === CROSS) || sideDiagonal.every(cell => cell === ZERO)) {
+        return [[0, 2], [1, 1], [2, 0]];
+    }
+
+    return undefined;
 }
 
 function renderSymbolInCell(symbol, row, col, color = '#333') {
@@ -125,6 +145,11 @@ function addResetListener() {
 }
 
 function resetClickHandler() {
+    gameState = [[EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY]];
+    isGameOver = false;
+
+    startGame();
+
     console.log('reset!');
 }
 
