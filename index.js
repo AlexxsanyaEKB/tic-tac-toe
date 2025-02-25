@@ -46,14 +46,14 @@ function cellClickHandler(row, col) {
     gameState[row][col] = step;
     isZeroStep = !isZeroStep;
 
-    if (isTie()) {
-        alert('Победила дружба');
+    if (isWin()) {
+        alert(`Победили ${step}`);
         isGameOver = true;
         return;
     }
 
-    if (isWin()) {
-        alert(`Победили ${step}`);
+    if (isTie()) {
+        alert('Победила дружба');
         isGameOver = true;
     }
 }
