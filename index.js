@@ -6,6 +6,7 @@ const container = document.getElementById('fieldWrapper');
 
 let gameState = [[EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY]];
 let isZeroStep = false;
+let isGameOver = false;
 
 startGame();
 addResetListener();
@@ -32,6 +33,10 @@ function renderGrid(dimension) {
 function cellClickHandler(row, col) {
     console.log(`Clicked on cell: ${row}, ${col}`);
 
+    if (isGameOver){
+        return;
+    }
+
     const step = isZeroStep ? ZERO : CROSS;
     if (gameState[row][col] !== EMPTY) {
         return;
@@ -43,6 +48,13 @@ function cellClickHandler(row, col) {
 
     if (isTie()) {
         alert('Победила дружба');
+        isGameOver = true;
+        return;
+    }
+
+    if (isWin()) {
+        alert(`Победили ${step}`);
+        isGameOver = true;
     }
 }
 
@@ -56,6 +68,43 @@ function isTie() {
     }
 
     return true;
+}
+
+function isWin() {
+    return checkRows() || checkCols() || checkDiagonals();
+}
+
+function checkRows() {
+    for (const row of gameState) {
+        if (row.every(cell => cell === CROSS) || row.every(cell => cell === ZERO)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function checkCols() {
+    for (let i = 0; i < gameState.length; i++) {
+        if (gameState.every(row => row[i] === CROSS) || gameState.every(row => row[i] === ZERO)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function checkDiagonals() {
+    const mainDiagonal = [];
+    const sideDiagonal = [];
+
+    for (let i = 0; i < gameState.length; i++) {
+        mainDiagonal.push   (gameState[i][i]);
+        sideDiagonal.push(gameState[i][gameState.length - 1 - i]);
+    }
+
+    return mainDiagonal.every(cell => cell === CROSS) || mainDiagonal.every(cell => cell === ZERO) ||
+        sideDiagonal.every(cell => cell === CROSS) || sideDiagonal.every(cell => cell === ZERO);
 }
 
 function renderSymbolInCell(symbol, row, col, color = '#333') {
